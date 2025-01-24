@@ -96,3 +96,22 @@ html {
 .neobrutalism-4 {
   @apply border-black border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
 }
+
+.ql-container {
+  min-height: 80vh;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ql-editor {
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.ql-toolbar {
+  border-radius: 5px;
+}
