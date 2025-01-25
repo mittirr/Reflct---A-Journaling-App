@@ -12,9 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getMoodById, MOODS } from '@/app/lib/moods';
 import { object } from 'zod';
 import { Button } from '@/components/ui/button';
+import useFetch from '@/hooks/use-fetch';
+import { createJournalEntry } from '@/actions/journal';
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
 const JournalEntryPage = () => {
+
+  useFetch()
 
   const {register, handleSubmit, control, formState:{errors}, getValues} = useForm({
     resolver: zodResolver(journalSchema), 

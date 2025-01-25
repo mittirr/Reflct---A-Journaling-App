@@ -7,11 +7,15 @@ import { revalidatePath } from "next/cache";
 
 export async function createJournalEntry (data) {
     try {
+
+        // chechking if user is logged in or not and acting accordingly
+
         const {userId} = await auth();
         if(!userId) throw new Error("Unauthorized");
 
         // ArcJet Rate Limiting
-
+        
+        // if user is there then finding their data in database
         const user = db.user.findUnique({
             where:{ clerkUserId: userId },
         })
