@@ -8,28 +8,26 @@ import { revalidatePath } from "next/cache";
 export async function createJournalEntry (data) {
     try {
 
-        // chechking if user is logged in or not and acting accordingly
-
-        const {userId} = await auth();
+        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
         if(!userId) throw new Error("Unauthorized");
 
         // ArcJet Rate Limiting
         
-        // if user is there then finding their data in database
-        const user = db.user.findUnique({
+        const user = db.user.findUnique({                    // if user is there then finding their data in database
             where:{ clerkUserId: userId },
         })
 
-        if (!user){
+
+        if (!user){                                          // if user is not found in database then throw error
             throw new Error("No User  Found");
         }
 
-        const mood = MOODS[data.mood.toUpperCase()];
+        const mood = MOODS[data.mood.toUpperCase()];         
         if(!mood) throw new Error("Invalid mood");
 
-        const moodImageUrl = await getPixabayImage(data.moodQuery);
+        const moodImageUrl = await getPixabayImage(data.moodQuery);         // sending api request to pixabay to get image according to mood
 
-        const entry = await db.entry.create({
+        const entry = await db.entry.create({                               // creating an entry to database
             data:{
                 title: data.title,
                 content: data.content,
@@ -41,7 +39,7 @@ export async function createJournalEntry (data) {
             },
         })
 
-        await db.draft.deleteMany({
+        await db.draft.deleteMany({                                         // deleting draft after it is saved to main collection
             where:{
                 userId: user.id,
             }
