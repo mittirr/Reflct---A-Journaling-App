@@ -1,9 +1,11 @@
 "use server"
 
 import { MOODS } from "@/app/lib/moods";
-import { auth } from "@clerk/nextjs/dist/types/server"
 import { getPixabayImage } from "./public";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "../lib/prisma";
+
 
 export async function createJournalEntry (data) {
     try {

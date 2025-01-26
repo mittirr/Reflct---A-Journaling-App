@@ -1,5 +1,5 @@
 import react from "react";
-import {useState} from react;
+import {useState} from "react";
 import { toast } from "sonner";
 
 const useFetch = (cb) => {
@@ -12,7 +12,7 @@ const useFetch = (cb) => {
         setError(null);
 
         try {
-            cosnt response = await cb(...args);
+            const response = await cb(...args);
             setData(response);
             setError(null);
         } catch (error) {

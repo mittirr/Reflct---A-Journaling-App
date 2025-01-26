@@ -1,7 +1,6 @@
 "use client"
 
 import dynamic from 'next/dynamic';
-import React from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import 'react-quill-new/dist/quill.snow.css';
 import { BarLoader } from 'react-spinners';
@@ -14,11 +13,20 @@ import { object } from 'zod';
 import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
 import { createJournalEntry } from '@/actions/journal';
+import {useEffect} from "react";
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
 const JournalEntryPage = () => {
 
-  useFetch()
+  const {
+    loading: actionLoading,
+    fn: actionFn, 
+    data: actionResult,
+  } = useFetch(createJournalEntry);
+
+  const router = useRouter();
 
   const {register, handleSubmit, control, formState:{errors}, getValues} = useForm({
     resolver: zodResolver(journalSchema), 
@@ -30,10 +38,30 @@ const JournalEntryPage = () => {
     },
   });
 
-  const isLoading = false;
+  const isLoading = actionLoading;
+
+  useEffect(() => {
+    if(actionResult && !actionLoading){
+      router.push(
+        `/collections/${
+          actionResult.collectionId ? actionResult.collectionId : "unorganized"
+        }`
+    );
+
+      toast.success("Entry Created Successfully");
+    }
+  }, [actionResult, actionLoading]);                  // run this use effect whenever actionResult or actionLoading changes
+  
+  
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
+    const mood = getMoodById(data.mood);
+
+    actionFn({
+      ...data,
+      moodScore: mood.score,
+      moodQuery: mood.pixabayQuery,
+    });
   });
 
   return (
