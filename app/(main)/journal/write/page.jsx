@@ -13,18 +13,33 @@ import { object } from 'zod';
 import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
 import { createJournalEntry } from '@/actions/journal';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { createCollection, getCollection, getCollections } from '@/actions/collection';
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
 const JournalEntryPage = () => {
+
+  const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
 
   const {
     loading: actionLoading,
     fn: actionFn, 
     data: actionResult,
   } = useFetch(createJournalEntry);
+
+  const {
+    loading: collectionsLoading,
+    fn: fetchCollections, 
+    data: collections,
+  } = useFetch(getCollections);
+
+  const {
+    loading: createCollectionsLoading,
+    fn: createCollectionFn, 
+    data: createdCollection,
+  } = useFetch(createCollection);
 
   const router = useRouter();
 
@@ -38,6 +53,10 @@ const JournalEntryPage = () => {
     },
   });
 
+  useEffect(() => {
+    fetchCollections();
+  }, [])
+  
   const isLoading = actionLoading;
 
   useEffect(() => {
@@ -152,11 +171,40 @@ const JournalEntryPage = () => {
           <label className="text-sm font-medium">
             Add to Collection (optional)
           </label>
-          {/* <Controller
-            name="content"
+          <Controller
+            name="collectionId"
             control={control}
-            render={({field}) => {}}
-          /> */}
+            render={({field}) => {
+              return(
+                <Select 
+                  onValueChange={(value)=>{
+                    if (value === "new"){
+                      setIsCollectionDialogOpen(true)
+                    } else{
+                      field.onChange(value);
+                    } 
+                  }} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a Collection..." />
+                </SelectTrigger>
+                <SelectContent>
+                {collections.map((collection) => {
+                    return (
+                      <SelectItem key={collection.id} value={collection.id}>
+                        {collection.name}
+                      </SelectItem>
+                    );
+                })}
+                      <SelectItem value="new">
+                          <span className="text-yellow-600">
+                            + Create New Collection
+                          </span>
+                      </SelectItem>
+                </SelectContent>
+                </Select>
+              )
+            }}
+          />
 
           {errors.collectionId && (<p className="text-red-500 text-sm">{errors.collectionId.message}</p>)}
           

@@ -1,3 +1,5 @@
+"use server"
+
 import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
@@ -62,7 +64,7 @@ export async function createCollection(data) {
 }
 
 
-export async function getCollection() {
+export async function getCollections() {
         const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
         if(!userId) throw new Error("Unauthorized");
 
