@@ -16,7 +16,7 @@ import { createJournalEntry } from '@/actions/journal';
 import {useEffect, useState} from "react";
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { createCollection, getCollection, getCollections } from '@/actions/collection';
+import { createCollection, getCollections } from '@/actions/collection';
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
 const JournalEntryPage = () => {
