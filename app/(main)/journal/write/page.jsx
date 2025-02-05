@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import dynamic from 'next/dynamic';
 import { Controller, useForm } from 'react-hook-form';
@@ -17,9 +17,15 @@ import {useEffect, useState} from "react";
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { createCollection, getCollections } from '@/actions/collection';
+import { useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
+
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
-const JournalEntryPage = () => {
+export default function JournalEntryPage(){
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
 
@@ -41,7 +47,7 @@ const JournalEntryPage = () => {
     data: createdCollection,
   } = useFetch(createCollection);
 
-  const router = useRouter();
+  
 
   const {register, handleSubmit, control, formState:{errors}, getValues} = useForm({
     resolver: zodResolver(journalSchema), 
@@ -218,5 +224,3 @@ const JournalEntryPage = () => {
     </div>
   )
 }
-
-export default JournalEntryPage
