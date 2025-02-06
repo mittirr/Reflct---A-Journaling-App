@@ -29,27 +29,30 @@ export default function JournalEntryPage(){
 
   const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
 
-  const {
-    loading: actionLoading,
-    fn: actionFn, 
-    data: actionResult,
-  } = useFetch(createJournalEntry);
+  // Fetch Hooks
 
   const {
     loading: collectionsLoading,
     fn: fetchCollections, 
     data: collections,
   } = useFetch(getCollections);
+  
+  const {
+    loading: actionLoading,
+    fn: actionFn, 
+    data: actionResult,
+  } = useFetch(createJournalEntry);
+
 
   const {
-    loading: createCollectionsLoading,
+    loading: createCollectionLoading,
     fn: createCollectionFn, 
     data: createdCollection,
   } = useFetch(createCollection);
 
   
 
-  const {register, handleSubmit, control, formState:{errors}, getValues} = useForm({
+  const {register, handleSubmit, control, setValue, watch, reset, formState:{errors}, getValues} = useForm({
     resolver: zodResolver(journalSchema), 
     defaultValues:{
       title: "",
@@ -194,7 +197,7 @@ export default function JournalEntryPage(){
                   <SelectValue placeholder="Choose a Collection..." />
                 </SelectTrigger>
                 <SelectContent>
-                {collections.map((collection) => {
+                {collections?.map((collection) => {
                     return (
                       <SelectItem key={collection.id} value={collection.id}>
                         {collection.name}
@@ -221,6 +224,7 @@ export default function JournalEntryPage(){
           <Button type="submit" variant="journal">Publish</Button>
         </div>
       </form>
+      
     </div>
   )
 }
