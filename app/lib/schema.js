@@ -8,7 +8,7 @@ export const journalSchema = z.object({
 })
 
 
-export cosnt CollectionSchema = z.object({
+export const CollectionSchema = z.object({
     name: z.string().min(1, "Name is Required"),
     description: z.string().optional,
 })
