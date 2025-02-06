@@ -6,3 +6,9 @@ export const journalSchema = z.object({
     mood:z.string().min(1, "Mood is Required"),
     collectionId:z.string().optional(),
 })
+
+
+export cosnt CollectionSchema = z.object({
+    name: z.string().min(1, "Name is Required"),
+    description: z.string().optional,
+})
