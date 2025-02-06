@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import { createCollection, getCollections } from '@/actions/collection';
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import CollectionForm from '@/components/collection-dialog';
 
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
@@ -66,7 +67,6 @@ export default function JournalEntryPage(){
     fetchCollections();
   }, [])
   
-  const isLoading = actionLoading;
 
   useEffect(() => {
     if(actionResult && !actionLoading){
@@ -91,6 +91,13 @@ export default function JournalEntryPage(){
       moodQuery: mood.pixabayQuery,
     });
   });
+
+
+  const handleCreateCollection = async (data) =>{
+    createCollectionFn(data);
+  }
+
+  const isLoading = actionLoading || collectionsLoading;
 
   return (
 
@@ -224,7 +231,12 @@ export default function JournalEntryPage(){
           <Button type="submit" variant="journal">Publish</Button>
         </div>
       </form>
-      
+
+      <CollectionForm 
+      loading = {createCollection}
+      onSucsess= {handleCreateCollection}
+      open={isCollectionDialogOpen}
+      setOpen={setIsCollectionDialogOpen}/>
     </div>
   )
 }
