@@ -92,7 +92,15 @@ export default function JournalEntryPage(){
     });
   });
 
-
+  useEffect(() => {
+    if(createdCollection){
+      setIsCollectionDialogOpen(false);
+      fetchCollections();
+      setValue("collectionId", createdCollection.id);
+      toast.success(`Collection ${createdCollection.name} created!`);
+    }
+  }, [createdCollection])
+  
   const handleCreateCollection = async (data) =>{
     createCollectionFn(data);
   }
@@ -228,7 +236,7 @@ export default function JournalEntryPage(){
         </div>
 
         <div className="space-y-4 flex">
-          <Button type="submit" variant="journal">Publish</Button>
+          <Button type="submit" variant="journal" disabled={actionLoading}>Publish</Button>
         </div>
       </form>
 

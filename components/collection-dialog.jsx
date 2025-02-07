@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BarLoader } from 'react-spinners'
-import { CollectionSchema } from '@/app/lib/schema'
+import { collectionSchema } from '@/app/lib/schema'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,7 +15,7 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
 
 
     const {register, handleSubmit, formState: {errors},} = useForm({
-        resolver: zodResolver(CollectionSchema),
+        resolver: zodResolver(collectionSchema),
         defaultValues:{
             name: "",
             description: "",
@@ -42,6 +42,7 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Collection Name</label>
                     <Input 
+                        disables={loading}
                         {...register("name")}
                         placeholder="Enter collection name..."
                         className={`${errors.name?"border-red-500" : ""}`}
