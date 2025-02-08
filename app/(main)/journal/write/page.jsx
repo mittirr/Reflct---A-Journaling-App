@@ -103,7 +103,7 @@ export default function JournalEntryPage(){
   
   const handleCreateCollection = async (data) =>{
     createCollectionFn(data);
-  }
+  };
 
   const isLoading = actionLoading || collectionsLoading;
 
@@ -120,7 +120,7 @@ export default function JournalEntryPage(){
         <div className="space-y-2">
           <label className="text-sm font-medium">Title</label>
           <Input 
-            disables={isLoading}
+            disabled={isLoading}
             {...register("title")}
             placeholder="Enter a Title..."
             className={`py-5 md:text-md ${errors.title?"border-red-500" : ""}`}

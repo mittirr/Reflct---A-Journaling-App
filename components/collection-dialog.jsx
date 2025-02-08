@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BarLoader } from 'react-spinners'
@@ -42,7 +42,6 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Collection Name</label>
                     <Input 
-                        disables={loading}
                         {...register("name")}
                         placeholder="Enter collection name..."
                         className={`${errors.name?"border-red-500" : ""}`}
@@ -55,7 +54,6 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Collection Name</label>
                     <Textarea 
-                        disables={loading}
                         {...register("description")}
                         placeholder="Describe your collection..."
                         className={`${errors.description?"border-red-500" : ""}`}
