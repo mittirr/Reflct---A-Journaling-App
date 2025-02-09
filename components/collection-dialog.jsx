@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input'
 
 const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
 
-
     const {register, handleSubmit, formState: {errors},} = useForm({
         resolver: zodResolver(collectionSchema),
         defaultValues:{
