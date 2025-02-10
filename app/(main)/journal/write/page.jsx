@@ -241,10 +241,10 @@ export default function JournalEntryPage(){
       </form>
 
       <CollectionForm 
-      loading = {createCollection}
-      onSucsess= {handleCreateCollection}
-      open={isCollectionDialogOpen}
-      setOpen={setIsCollectionDialogOpen}/>
+        loading = {createCollection}
+        onSucsess= {handleCreateCollection}
+        open={isCollectionDialogOpen}
+        setOpen={setIsCollectionDialogOpen}/>
     </div>
   )
 }
