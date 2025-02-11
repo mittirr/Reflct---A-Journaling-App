@@ -1,6 +1,6 @@
 "use server"
 
-import { MOODS } from "@/app/lib/moods";
+import { getMoodById, MOODS } from "@/app/lib/moods";
 import { getPixabayImage } from "./public";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
@@ -80,5 +80,53 @@ export async function createJournalEntry (data) {
         return entry;
      } catch (error) {
         throw new Error(error.message);
+    }
+}
+
+export async function getJournalEntries({collectionId, orderBy ="desc"}) {
+    try {
+        const {userId} = await auth();
+        if (!userId) throw new Error ("Unauthorized");
+
+        const user = await db.user.findUnique({
+            where: {clerkUserId: userId}
+        }) 
+
+        if(!user) throw new Error ("User not found");
+        
+        const entries = await db.entry.findMany({
+            where:{
+                userId: user.id,
+                ...Code(collectionId === "unorganized"?
+                    {collectionId:null} : collectionId?
+                    {collectionId} : {}),
+            },
+            include:{
+                collection: {
+                    select:{
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: orderBy,
+            },
+
+        });
+
+        const entriesWithMoodData = entries.map((entry) => ({
+            ...entry,
+            moodData:getMoodById(entry.mood),
+        }));
+
+        return{
+            success: true,
+            data: {
+                entries: entriesWithMoodData,
+            },
+        };
+    } catch (error) {
+        return {success: false, error: error.message};
     }
 }
