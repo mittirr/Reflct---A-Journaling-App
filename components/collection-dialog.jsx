@@ -34,7 +34,7 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
             </DialogHeader>
             
             {loading && (
-                <BarLoader className="mb-4" color="orange" width={"100%"}/>
+                <BarLoader className="mb-4" width={"100%"} color="orange" />
                 )}
 
             <form onSubmit={onSubmit} className="space-y-6">
@@ -51,7 +51,7 @@ const CollectionForm = ({onSuccess, open, setOpen, loading}) => {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Collection Name</label>
+                    <label className="text-sm font-medium">Description (Optional)</label>
                     <Textarea 
                         {...register("description")}
                         placeholder="Describe your collection..."
