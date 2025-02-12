@@ -83,16 +83,16 @@ export async function createJournalEntry (data) {
     }
 }
 
-export async function getJournalEntries({collectionId, orderBy ="desc"}) {
+export async function getJournalEntries({collectionId, orderBy = "desc",} = {}) {
     try {
         const {userId} = await auth();
-        if (!userId) throw new Error ("Unauthorized");
+        if (!userId) throw new Error("Unauthorized");
 
         const user = await db.user.findUnique({
-            where: {clerkUserId: userId}
-        }) 
+            where: {clerkUserId: userId},
+        });
 
-        if(!user) throw new Error ("User not found");
+        if(!user) throw new Error("User not found");
         
         const entries = await db.entry.findMany({
             where:{
@@ -117,7 +117,7 @@ export async function getJournalEntries({collectionId, orderBy ="desc"}) {
 
         const entriesWithMoodData = entries.map((entry) => ({
             ...entry,
-            moodData:getMoodById(entry.mood),
+            moodData: getMoodById(entry.mood),
         }));
 
         return{
