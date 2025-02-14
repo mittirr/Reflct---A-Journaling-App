@@ -7,10 +7,20 @@ const Dashboard = async () => {
   const collections = await getCollections();
   const entriesData = await getJournalEntries();
 
-  const entriesByCollection =entriesData?.data.entries.reduce(
-    (acc,entry) => {
-      const collectionId = entry.collectionId || "unorganized";
-    },{})
+  console.log(entriesData);
+  
+  // const entriesByCollection =entriesData?.data.entries.reduce(
+  //   (acc,entry) => {
+  //     const collectionId = entry.collectionId || "unorganized";
+
+  //     if (!acc[collectionId]){
+  //       acc[collectionId] = [];
+  //     }
+  //     acc[collectionId].push(entry);
+  //     return acc;
+  //   },{});
+
+  //   console.log(entriesByCollection)
   return (
     <div>Dashboard</div>
   )
