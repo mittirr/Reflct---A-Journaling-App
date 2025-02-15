@@ -97,7 +97,7 @@ export async function getJournalEntries({collectionId, orderBy = "desc",} = {}) 
         const entries = await db.entry.findMany({
             where:{
                 userId: user.id,
-                ...Code(collectionId === "unorganized"?
+                 ...(collectionId === "unorganized"?
                     {collectionId:null} : collectionId?
                     {collectionId} : {}),
             },

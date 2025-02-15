@@ -7,7 +7,7 @@ const Dashboard = async () => {
   const collections = await getCollections();
   const entriesData = await getJournalEntries();
 
-  console.log(entriesData);
+  console.log(collections,entriesData);
   
   // const entriesByCollection =entriesData?.data.entries.reduce(
   //   (acc,entry) => {
