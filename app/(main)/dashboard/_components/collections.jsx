@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { createCollection } from "@/actions/collection";
 import useFetch from "@/hooks/use-fetch";
 
-const Collections = ({collections = [], entriesByCollections}) => {
+const Collections = ({collections = [], entriesByCollection}) => {
     const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false)
 
     const {
@@ -34,10 +34,10 @@ return <section>
             onCreateNew={() => setIsCollectionDialogOpen(true)}
         />
 
-        {entriesByCollections?.unorganized?.length > 0 && (
+        {entriesByCollection?.unorganized?.length > 0 && (
             <CollectionPreview
                 name="unorganized"
-                entries={entriesByCollections.unorganized}
+                entries={entriesByCollection.unorganized}
                 isUnorganized={true}
             />
         )}
@@ -47,7 +47,7 @@ return <section>
                 key={collection.id}
                 id={collection.id}
                 name={collection.name}
-                entries={entriesByCollections[collection.id] || []}
+                entries={entriesByCollection[collection.id] || []}
             />
         })}
 
