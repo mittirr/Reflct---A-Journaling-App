@@ -27,7 +27,7 @@ const Collections = ({collections = [], entriesByCollection}) => {
 
     if(collections.length === 0) return <></>;
 return <section>
-    <h2>Collections</h2>
+    <h2 className="text-3xl font-bold gradient-title">Collections</h2>
     <div>
         <CollectionPreview
             isCreateNew={true}
