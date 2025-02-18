@@ -1,8 +1,6 @@
 import React from 'react'
 
-const CollectionPreview = () => {
-
-  const colorSchemes = {
+const colorSchemes = {
     unorganized: {
       bg: "bg-amber-100 hover:bg-amber-50",
       tab: "bg-amber-200 group-hover:bg-amber-300",
@@ -17,6 +15,25 @@ const CollectionPreview = () => {
     },
   };
   
+
+  const FolderTab = ({colorClass}) => (
+    <div className={`absolute inset-x-4 -top-2 h-2 rounded-t-md transform -skew-x-6 transition-colors ${colorClass}`}
+    />
+  )
+const CollectionPreview = ({
+  id,
+  name,
+  entries=[],
+  isUnorganized = false,
+  isCreateNew = false,
+  onCreateNew,
+}) => {
+
+  if(isCreateNew){
+    return <button>
+      <FolderTab/>
+    </button>
+  }
   return (
     <div>CollectionPreview</div>
   )
