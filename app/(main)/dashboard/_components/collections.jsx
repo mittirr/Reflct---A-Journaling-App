@@ -26,9 +26,10 @@ const Collections = ({collections = [], entriesByCollection}) => {
     const handleCreateCollection = () => {};
 
     if(collections.length === 0) return <></>;
-return <section>
+
+return <section id="collections" className="space-y-6"> 
     <h2 className="text-3xl font-bold gradient-title">Collections</h2>
-    <div>
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" > 
         <CollectionPreview
             isCreateNew={true}
             onCreateNew={() => setIsCollectionDialogOpen(true)}
