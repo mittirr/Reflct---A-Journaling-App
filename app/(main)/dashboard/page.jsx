@@ -19,8 +19,7 @@ const Dashboard = async () => {
       return acc;
     },{});
 
-    console.log(entriesByCollection)
-  return <div className="px-4 py-8 space-y-8">
+return <div className="px-4 py-8 space-y-8">
       <section className="space-y-4">{/*Mood Analytics*/}</section>
       
       <Collections
