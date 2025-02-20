@@ -84,13 +84,15 @@ const CollectionPreview = ({
               </span>
             )}
           </div>
-          <div>
-            {entries.length > 0 && (
-              entries.slice(0.2).map((entry) => <EntryPreview
+          <div className="space-y-2 mt-4">
+            {entries.length > 0 ?
+              (entries.slice(0.2).map((entry) => <EntryPreview
               key={entry.id}
               entry={entry}
-              />)
+              />)) : (
+                <p className="text-sm text-gray-500 italic">No entries yet</p>
             )}
+
           </div>
         </div>
       </div>
