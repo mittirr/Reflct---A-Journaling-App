@@ -55,7 +55,16 @@ const CollectionPreview = ({
           colorSchemes[isUnorganized? "unorganized" : "collection"].tab
           }
       />
-      
+      <div
+        className={`relative rounded-lg p-6 shadow-md hover:shadow-lg transition-all ${
+          colorSchemes[isUnorganized ? "unorganized" : "collection"].bg 
+        }`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-2xl">{isUnorganized? "📂" : "📁"}</span>
+          <h3 className="text-lg font-semibold truncate">{name}</h3>
+        </div>
+      </div>
     </Link>
   );
 };

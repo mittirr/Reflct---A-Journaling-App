@@ -45,14 +45,14 @@ return <section id="collections" className="space-y-6">
             />
         )}
 
-        {collections?.map((collection) => {
+        {collections?.map((collection) => (
             <CollectionPreview
                 key={collection.id}
                 id={collection.id}
                 name={collection.name}
                 entries={entriesByCollection[collection.id] || []}
             />
-        })}
+        ))}
 
         <CollectionForm
             loading = {createCollectionLoading}
