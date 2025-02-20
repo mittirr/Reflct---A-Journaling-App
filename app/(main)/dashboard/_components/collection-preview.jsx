@@ -1,3 +1,4 @@
+import { getMoodById } from '@/app/lib/moods';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -23,6 +24,13 @@ import React from 'react'
     <div className={`absolute inset-x-4 -top-2 h-2 rounded-t-md transform -skew-x-6 transition-colors ${colorClass}`}
     />
   );
+
+  const EntryPreview = ({ entry }) => (
+    <div className="bg-white/50 p-2 rounded-sm truncate">
+      <span className="mr-2">{getMoodById(entry.mood)?.emoji}</span>
+      {entry.title}
+    </div>
+  )
 
 const CollectionPreview = ({
   id,
@@ -74,6 +82,14 @@ const CollectionPreview = ({
                   addSuffix: true,
                 })}
               </span>
+            )}
+          </div>
+          <div>
+            {entries.length > 0 && (
+              entries.slice(0.2).map((entry) => <EntryPreview
+              key={entry.id}
+              entry={entry}
+              />)
             )}
           </div>
         </div>
