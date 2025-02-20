@@ -1,4 +1,8 @@
+"use client";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import React from 'react'
+import { useState } from 'react';
 
 
 const timeOptions = [
@@ -7,10 +11,26 @@ const timeOptions = [
     { value: "30d", label: "Last 30 Days" },
   ];
 
-  
+
 const MoodAnalytics = () => {
-    
-  return <div>MoodAnalytics</div>
+  const [period, setPeriod] = useState("7d")
+  return <>
+  <div className="flex justify-between items-center">
+    <h2 className="text-5xl font-bold gradient-title">Dashboard</h2>
+    <Select value={period} onValueChange={setPeriod}>
+    <SelectTrigger className="w-[140px]">
+        <SelectValue/>
+    </SelectTrigger>
+    <SelectContent>
+        {timeOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+                {option.label}
+            </SelectItem>
+        ))}
+    </SelectContent>
+    </Select>
+  </div>
+  </>
 }
 
-export default MoodAnalytics
+export default MoodAnalytics;
