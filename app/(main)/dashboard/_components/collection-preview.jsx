@@ -1,3 +1,4 @@
+import { format, formatDistanceToNow } from 'date-fns';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
@@ -63,6 +64,18 @@ const CollectionPreview = ({
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl">{isUnorganized? "📂" : "📁"}</span>
           <h3 className="text-lg font-semibold truncate">{name}</h3>
+        </div>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>{entries.length} entries</span>
+            {entries.length > 0 && (
+              <span>
+                {formatDistanceToNow(new Date(entries[0].createdAt),{
+                  addSuffix: true,
+                })}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>
