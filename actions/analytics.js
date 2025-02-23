@@ -27,5 +27,31 @@ export async function getAnalytics(period = "30d") {
             break;
     }
 
-    const entries = await
+    const entries = await db.entry.findMany({
+        where:{
+            userId: user.id,
+            createdAt:{
+                gte: startDate,
+            },
+        },
+        orderBy: {
+            createdAt: "asc",
+        },
+    });
+
+    const moodData = entries.reduce((acc, entry) => {
+        const date = entry.createdAt.toISOString().split("T")[0];
+            if(!acc[date]){
+                acc[date] = {
+                    totalScore: 0,
+                    count: 0,
+                    entries: [],
+                };
+            }
+
+            acc[date].totalScore += entry.moodScore;
+            acc[date].date += 1;
+            acc[date].entries.push(entry);
+            return acc;
+    },{});
 }
