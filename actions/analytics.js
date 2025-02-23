@@ -53,5 +53,6 @@ export async function getAnalytics(period = "30d") {
             acc[date].date += 1;
             acc[date].entries.push(entry);
             return acc;
+            
     },{});
 }
