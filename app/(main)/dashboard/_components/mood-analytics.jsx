@@ -7,6 +7,9 @@ import { useUser } from '@clerk/nextjs';
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import MoodAnalyticsSkeleton from './analytics-loading';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const timeOptions = [
@@ -34,8 +37,10 @@ const MoodAnalytics = () => {
   }, [period]);
 
   if (loading || !analytics?.data || !isLoaded){
-    
+    return <MoodAnalyticsSkeleton/>;
   }
+
+  const {timeline, stats} = analytics.data;
   return <>
   <div className="flex justify-between items-center">
     <h2 className="text-5xl font-bold gradient-title">Dashboard</h2>
@@ -51,6 +56,20 @@ const MoodAnalytics = () => {
         ))}
     </SelectContent>
     </Select>
+  </div>
+
+  <div className="space-y-6">
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-2xl font-bold">{stats.totalEntries}</p>
+        <p className="text-xs text-muted-foreground">~{stats.dailyAverage} entries per day</p>
+      </CardContent>
+    </Card>
+    </div>
   </div>
   </>
 }
