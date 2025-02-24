@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { object } from "zod";
 
 export async function getAnalytics(period = "30d") {
     const { userId } = await auth();
@@ -55,4 +56,10 @@ export async function getAnalytics(period = "30d") {
             return acc;
             
     },{});
+
+    const analyticsData = Object.entries(moodData).map((date, data) => ({
+        data,
+        averageScore: Number(data.totalScore / data.count).toFixed(1),
+        entryCount: data.count,
+    }))
 }
