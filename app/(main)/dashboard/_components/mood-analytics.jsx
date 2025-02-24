@@ -69,6 +69,17 @@ const MoodAnalytics = () => {
         <p className="text-xs text-muted-foreground">~{stats.dailyAverage} entries per day</p>
       </CardContent>
     </Card>
+
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium">Average Mood</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-2xl font-bold">{stats.averageScore}/10</p>
+        <p className="text-xs text-muted-foreground">Overall mood score</p>
+      </CardContent>
+    </Card>
+
     </div>
   </div>
   </>
