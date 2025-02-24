@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import MoodAnalyticsSkeleton from './analytics-loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getMoodById } from '@/app/lib/moods';
 
 
 const timeOptions = [
@@ -79,7 +80,18 @@ const MoodAnalytics = () => {
         <p className="text-xs text-muted-foreground">Overall mood score</p>
       </CardContent>
     </Card>
-
+    
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium">Mood Summary</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div>
+          {getMoodById(stats.mostFrequentMood)?.emoji}{" "}
+          {getMoodTrend(stats.averageScore)}
+        </div>
+      </CardContent>
+    </Card>
     </div>
   </div>
   </>
