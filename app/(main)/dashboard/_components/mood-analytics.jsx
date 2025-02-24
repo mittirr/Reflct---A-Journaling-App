@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import MoodAnalyticsSkeleton from './analytics-loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getMoodById } from '@/app/lib/moods';
+import { getMoodById, getMoodTrend } from '@/app/lib/moods';
 
 
 const timeOptions = [
