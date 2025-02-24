@@ -9,8 +9,9 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import MoodAnalyticsSkeleton from './analytics-loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getMoodById, getMoodTrend } from '@/app/lib/moods';
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { format, parseISO } from 'date-fns';
 
 
 const timeOptions = [
@@ -41,7 +42,24 @@ const MoodAnalytics = () => {
     return <MoodAnalyticsSkeleton/>;
   }
 
+  if (!analytics) return null;
   const {timeline, stats} = analytics.data;
+
+  const CustomToolTip = ({ active, payload, label }) => {
+    if (active && payload?.length) {
+      return (
+        <div className="bg-white p-4 border rounded-lg shadow-lg">
+          <p className="font-medium">
+            {format(parseISO(label), "MMM d, yyyy")}
+          </p>
+          <p className="text-yellow-600">Average Mood: {payload[0].value}</p>
+          <p className="text-purple-600">Entries: {payload[1].value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return <>
   <div className="flex justify-between items-center">
     <h2 className="text-5xl font-bold gradient-title">Dashboard</h2>
@@ -86,9 +104,64 @@ const MoodAnalytics = () => {
         <CardTitle className="text-sm font-medium">Mood Summary</CardTitle>
       </CardHeader>
       <CardContent>
-        <div>
+        <div className="text-2xl font-bold flex items-center gap-2">
           {getMoodById(stats.mostFrequentMood)?.emoji}{" "}
           {getMoodTrend(stats.averageScore)}
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* chart */}
+
+    <Card>
+      <CardHeader>
+        <CardTitle>Mood Timeline</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[300px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={timeline}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={(date) => format(parseISO(date), "MMM d")}
+          />
+          <YAxis 
+            yAxisId="left"
+            domain={[0,10]}
+          />
+          <YAxis
+            yAxisId="right"
+            domain={[0,"auto"]}
+          />
+          <Tooltip content={<CustomToolTip/>}/>
+          <Legend />
+          <Line
+            yAxisId="left"
+            type="monotone" 
+            dataKey="averageScore" 
+            stroke="#8884d8"
+            name="Average Mood"
+            strokeWidth={2}
+          />
+          <Line 
+            yAxisId="right"
+            type="monotone" 
+            dataKey="entryCount" 
+            stroke="#82ca9d" 
+            name="Number of Entries"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
