@@ -61,5 +61,36 @@ export async function getAnalytics(period = "30d") {
         data,
         averageScore: Number(data.totalScore / data.count).toFixed(1),
         entryCount: data.count,
-    }))
+    }));
+
+    //calculate overall statistics
+
+    const overallStats = {
+        totalEntries: entries.length,
+        averageScore: Number(
+            (
+            entries.reduce((acc,entry) => acc + entry.moodScore, 0) / entries.length
+            ).toFixed(1)
+        ),
+
+        mostFrequentMood: Object.entries(
+            entries.reduce((acc, entry) => {
+                acc[entry.mood] = (acc[entry.mood] || 0) + 1;
+                return acc;
+            }, {})
+        ).sort((a,b) => b[1] - a[1])[0]?.[0],
+        dailyAverage: Number(
+            (
+                entries.length / (period === "7d" ? 7 : period === "15d" ? 15 : 30)
+            ).toFixed(1)
+        ),
+    };
+
+    return{
+        success: true,
+        data: {
+            timeline: analyticsData,
+            stats: overallStats,
+        }
+    }
 }
