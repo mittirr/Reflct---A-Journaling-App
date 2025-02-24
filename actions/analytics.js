@@ -58,7 +58,7 @@ export async function getAnalytics(period = "30d") {
     },{});
 
     const analyticsData = Object.entries(moodData).map((date, data) => ({
-        data,
+        date,
         averageScore: Number(data.totalScore / data.count).toFixed(1),
         entryCount: data.count,
     }));
