@@ -1,20 +1,19 @@
-import { ArrowLeft, ArrowLeftSquareIcon } from 'lucide-react';
-import Link from 'next/link';
-import { React, Suspense } from 'react'
-import { BarLoader, DotLoader } from 'react-spinners';
-// import { Suspense } from 'react/cjs/react.development';
+import Link from "next/link";
+import { Suspense } from "react";
+// import Loading from "./loading";
 
-export default function CollectionLayout({children}) => {
+export default function CollectionLayout({ children }) {
   return (
-    <div className=" container mx-auto px-4 py-8">
-        <div>
-            <Link href='/dashboard' className="text-sm flex items-center gap-1 text-yellow-600 hover:text-yelloow-700 cursor-pointer">
-                <ArrowLeft className="h-4 w-4"/> Back to Dashboard
-            </Link>
-        </div>
-        <Suspense fallback={<DotLoader color="yellow" width={"100%"}/>}>
-            {children}
-        </Suspense>
+    <div className="px-4 py-8">
+      <div className="mb-8">
+        <Link
+          href="/dashboard"
+          className="text-sm text-orange-600 hover:text-orange-700"
+        >
+          ← Back to Dashboard
+        </Link>
+      </div>
+      <Suspense>{children}</Suspense>
     </div>
-  )
-};
+  );
+}

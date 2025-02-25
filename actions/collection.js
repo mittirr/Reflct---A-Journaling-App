@@ -87,7 +87,7 @@ export async function getCollections() {
         return collections;
 };
 
-export async function getCollections(collectionId) {
+export async function getCollection(collectionId) {
     const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
     if(!userId) throw new Error("Unauthorized");
 
