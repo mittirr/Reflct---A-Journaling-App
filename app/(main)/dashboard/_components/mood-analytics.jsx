@@ -4,7 +4,7 @@ import { getAnalytics } from '@/actions/analytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFetch from '@/hooks/use-fetch';
 import { useUser } from '@clerk/nextjs';
-import React from 'react'
+import React, { PureComponent } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import MoodAnalyticsSkeleton from './analytics-loading';
@@ -29,8 +29,6 @@ const MoodAnalytics = () => {
     data: analytics,
     fn: fetchAnalytics,
   } = useFetch(getAnalytics);
-
-  console.log(analytics);
   
   const {isLoaded} = useUser();
 
@@ -43,22 +41,23 @@ const MoodAnalytics = () => {
   }
 
   if (!analytics) return null;
+  
   const {timeline, stats} = analytics.data;
 
-  const CustomToolTip = ({ active, payload, label }) => {
-    if (active && payload?.length) {
-      return (
-        <div className="bg-white p-4 border rounded-lg shadow-lg">
-          <p className="font-medium">
-            {format(parseISO(label), "MMM d, yyyy")}
-          </p>
-          <p className="text-yellow-600">Average Mood: {payload[0].value}</p>
-          <p className="text-purple-600">Entries: {payload[1].value}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  // const CustomTooltip = ({ active, payload, label }) => {
+  //   if (active && payload?.length) {
+  //     return (
+  //       <div className="bg-white p-4 border rounded-lg shadow-lg">
+  //         <p className="font-medium">
+  //           {format(parseISO(label), "MMM d, yyyy")}
+  //         </p>
+  //         <p className="text-orange-600">Average Mood: {payload[0].value}</p>
+  //         <p className="text-blue-600">Entries: {payload[1].value}</p>
+  //       </div>
+  //     );
+  //   }
+  //   return null;
+  // };
 
   return <>
   <div className="flex justify-between items-center">
@@ -119,7 +118,7 @@ const MoodAnalytics = () => {
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
+          {/* <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={timeline}
           margin={{
@@ -142,7 +141,7 @@ const MoodAnalytics = () => {
             yAxisId="right"
             domain={[0,"auto"]}
           />
-          <Tooltip content={<CustomToolTip/>}/>
+          <Tooltip content={<CustomTooltip/>}/>
           <Legend />
           <Line
             yAxisId="left"
@@ -161,7 +160,7 @@ const MoodAnalytics = () => {
             strokeWidth={2}
           />
         </LineChart>
-      </ResponsiveContainer>
+        </ResponsiveContainer> */}
         </div>
       </CardContent>
     </Card>
