@@ -100,7 +100,7 @@ export async function getCollections(collectionId) {
         throw new Error("No User  Found");
     } 
 
-    const collections = await db.collection.find({
+    const collections = await db.collection.findUnique({
         where:{
             userId: user.id,
             id: collectionId,
