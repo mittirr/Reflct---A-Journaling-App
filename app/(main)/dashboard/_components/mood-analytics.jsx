@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getMoodById, getMoodTrend } from '@/app/lib/moods';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { format, parseISO } from 'date-fns';
+import { date } from 'zod';
 
 
 const timeOptions = [
@@ -44,20 +45,21 @@ const MoodAnalytics = () => {
   
   const {timeline, stats} = analytics.data;
 
-  // const CustomTooltip = ({ active, payload, label }) => {
-  //   if (active && payload?.length) {
-  //     return (
-  //       <div className="bg-white p-4 border rounded-lg shadow-lg">
-  //         <p className="font-medium">
-  //           {format(parseISO(label), "MMM d, yyyy")}
-  //         </p>
-  //         <p className="text-orange-600">Average Mood: {payload[0].value}</p>
-  //         <p className="text-blue-600">Entries: {payload[1].value}</p>
-  //       </div>
-  //     );
-  //   }
-  //   return null;
-  // };
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload?.length) {
+      return (
+        <div className="bg-white p-4 border rounded-lg shadow-lg">
+          <p className="font-medium">
+            {label}
+            {/* {format(parseISO(label), "MMM d, yyyy")} */}
+          </p>
+          <p className="text-orange-600">Average Mood: {payload[0].value}</p>
+          <p className="text-blue-600">Entries: {payload[1].value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return <>
   <div className="flex justify-between items-center">
@@ -118,7 +120,7 @@ const MoodAnalytics = () => {
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full">
-          {/* <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={timeline}
           margin={{
@@ -131,7 +133,8 @@ const MoodAnalytics = () => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
-            tickFormatter={(date) => format(parseISO(date), "MMM d")}
+            tickFormatter={date}
+            // tickFormatter={(date) => format(parseISO(date), "MMM d")}
           />
           <YAxis 
             yAxisId="left"
@@ -141,7 +144,7 @@ const MoodAnalytics = () => {
             yAxisId="right"
             domain={[0,"auto"]}
           />
-          <Tooltip content={<CustomTooltip/>}/>
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line
             yAxisId="left"
@@ -160,7 +163,7 @@ const MoodAnalytics = () => {
             strokeWidth={2}
           />
         </LineChart>
-        </ResponsiveContainer> */}
+        </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
