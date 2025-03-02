@@ -55,6 +55,7 @@ const MoodAnalytics = () => {
           </p>
           <p className="text-orange-600">Average Mood: {payload[0].value}</p>
           <p className="text-blue-600">Entries: {payload[1].value}</p>
+          
         </div>
       );
     }
