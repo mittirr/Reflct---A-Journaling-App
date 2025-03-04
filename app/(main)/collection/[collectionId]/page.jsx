@@ -4,6 +4,7 @@ import { getCollection } from '@/actions/collection';
 import { getJournalEntries } from '@/actions/journal';
 import React from 'react'
 import DeleteCollectionDialog from '../_components/delete-collection';
+import JournalFilters from '../_components/journal-filters';
 
 const CollectionPage = async({params}) => {
     const { collectionId } = await params;
