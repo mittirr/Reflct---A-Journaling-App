@@ -7,7 +7,18 @@ const CollectionPage = async({params}) => {
     const entries = await getJournalEntries({ collectionId });
     const collection = await getCollection(collectionId)
   return (
-    <div>CollectionPage</div>
+    <div>
+      <div>
+        <div>
+          <h1>
+            {collectionId === "unorganized"
+              ? "Unorganized Entries"
+              : collection?.name || "collection"}
+          </h1>
+          {collection && <DeleteCollectionDialog />}
+        </div>
+      </div>
+    </div>
   )
 }
 
