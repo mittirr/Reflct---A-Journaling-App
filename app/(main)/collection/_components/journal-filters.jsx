@@ -81,6 +81,20 @@ const JournalFilters = ({entries}) => {
             </Button>
         )}
     </div>
+    <div className="text-sm text-gray-500">
+        Showing {filteredEntries.length} of {entries.length} entries
+    </div>
+
+    {filteredEntries.length === 0 ? (
+        <div className="text-center p-8">
+            <p className="text-gray-500">No entries found</p>
+        </div>
+    ) : (
+        <div>{filteredEntries.map((entry) => (
+        <EntryCard key={entry.id} entry={entry}/>
+            ))}
+        </div>
+    )}
     </>
   )
 }
