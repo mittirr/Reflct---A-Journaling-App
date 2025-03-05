@@ -26,11 +26,11 @@ import React from 'react'
   );
 
   const EntryPreview = ({ entry }) => (
-    <div className="bg-white/50 p-2 rounded-sm truncate">
+    <div className="bg-white/50 p-2 rounded text-sm truncate">
       <span className="mr-2">{getMoodById(entry.mood)?.emoji}</span>
       {entry.title}
     </div>
-  )
+  );
 
 const CollectionPreview = ({
   id,
