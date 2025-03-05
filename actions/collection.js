@@ -109,3 +109,41 @@ export async function getCollection(collectionId) {
 
     return collections;
 };
+
+export async function deleteCollection(collectionId) {
+    try {
+        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
+    if(!userId) throw new Error("Unauthorized");
+
+
+    const user = await db.user.findUnique({                    // if user exists inside database
+        where:{ clerkUserId: userId },
+    })
+
+    if (!user){                                          // if user is not found in database then throw error
+        throw new Error("No User  Found");
+    } 
+
+    const collection = await db.collection.findFirst({
+        where:{
+            userId: user.id,
+            id: collectionId,
+        },
+    });
+
+    if(!collection) throw new Error("Collection not found");
+
+    await db.collection.delete({
+        where: {
+            id: collectionId,
+        },
+    });
+
+    return true;
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+    
+    
+};
