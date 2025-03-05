@@ -94,13 +94,16 @@ export async function getJournalEntries({collectionId, orderBy = "desc",} = {}) 
 
         if(!user) throw new Error("User not found");
         
+
+        const where = {
+            userId: user.id,
+            ...(collectionId === "unorganized"?
+            {collectionId:null} : collectionId?
+            {collectionId} : {}),
+        };
+        
         const entries = await db.entry.findMany({
-            where:{
-                userId: user.id,
-                 ...(collectionId === "unorganized"?
-                    {collectionId:null} : collectionId?
-                    {collectionId} : {}),
-            },
+            where,
             include:{
                 collection: {
                     select:{

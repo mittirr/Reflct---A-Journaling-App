@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect} from 'react'
+import { useState } from "react";
 import { toast } from 'sonner';
+import { useEffect } from "react";
+
 
 const DeleteCollectionDialog = ({collection, entriesCount = 0}) => {
   const router = useRouter();
@@ -20,7 +22,7 @@ const {
 } = useFetch(deleteCollection);
 
 useEffect(() => {
-  if(deleteCollection && !isDeleting){
+  if(deletedCollection && !isDeleting){
     setOpen(false);
     toast.error(
       `Collection "${collection.name}" and all its entries deleted`
