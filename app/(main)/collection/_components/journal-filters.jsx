@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
+import EntryCard from '@/components/entry-card';
 
 const JournalFilters = ({entries}) => {
 
@@ -90,7 +91,7 @@ const JournalFilters = ({entries}) => {
             <p className="text-gray-500">No entries found</p>
         </div>
     ) : (
-        <div>{filteredEntries.map((entry) => (
+        <div className="flex flex-col gap-4">{filteredEntries.map((entry) => (
         <EntryCard key={entry.id} entry={entry}/>
             ))}
         </div>
