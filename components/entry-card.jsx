@@ -21,6 +21,14 @@ const EntryCard = ({entry}) => {
                         {format(new Date(entry.createdAt), "MMM d, yyyy")}
                     </time>
                 </div>
+
+                {entry.collection && (
+                    <div className="mt-4 flex items-center gap-2">
+                        <span className="text-sm px-2 py-1 bg-yellow-100 text-yellow-800 rounded">{entry.collection.name}</span>
+                    </div>
+                )
+
+                }
             </CardContent>
         </Card>
     </Link>

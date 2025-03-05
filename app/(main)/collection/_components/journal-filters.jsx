@@ -2,12 +2,12 @@
 
 import { CalendarIcon, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react'
+import { useState, useEffect } from "react";
 import { SelectItem } from '@radix-ui/react-select';
 import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MOODS } from '@/app/lib/moods';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
@@ -19,6 +19,36 @@ const JournalFilters = ({entries}) => {
     const [selectedMood, setSelectedMood] = useState("");
     const [date, setDate] = useState(null);
     const [filteredEntries, setFilteredEntries] = useState(entries)
+
+    useEffect(() => {
+      let filtered = entries;
+
+      if(searchQuery){
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(
+            (entry) => 
+                entry.title.toLowerCase().includes(query) ||
+                entry.content.toLowerCase().includes(query)
+        );
+      }
+
+    //   apply mood filter
+
+        if(selectedMood){
+            filtered = filtered.filter((entry) => entry.mood === selectedMood);
+        }
+
+    //  apply date filter
+
+        if(date){
+            filtered = filtered.filter((entry) => 
+            isSameDay(new Date(entry.createdAt), date)
+        );
+        }
+        
+        setFilteredEntries(filtered)
+    }, [entries, searchQuery, selectedMood, date]);
+    
 
     const clearFilters = () => {
         setSearchQuery("");
