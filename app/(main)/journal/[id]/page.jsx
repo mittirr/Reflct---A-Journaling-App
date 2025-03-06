@@ -1,5 +1,6 @@
 import { getJournalEntry } from '@/actions/journal';
 import { getMoodById } from '@/app/lib/moods';
+import { format } from 'date-fns';
 import Image from 'next/image';
 
 export default async function JournalEntryPage({params}){
@@ -20,6 +21,21 @@ export default async function JournalEntryPage({params}){
           />
         </div>
       )}
+
+      <div>
+        <div>
+          <div>
+            <div>
+              <h1 className="text-5xl font-bold gradient-title">
+                {entry.title}
+              </h1>
+              <p className="text-gray-500">
+                Created {format(new Date(entry.createdAt), "PPP")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
