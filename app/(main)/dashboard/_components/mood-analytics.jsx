@@ -132,8 +132,7 @@ const MoodAnalytics = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={date}
-                  tickFormatter={(date) => format(parseISO(date), "MMM d")}
+                  // tickFormatter={(date) => format(parseISO(date), "MMM d")}
                 />
                 <YAxis yAxisId="left" domain={[0,10]} />
                 <YAxis

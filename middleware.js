@@ -1,8 +1,8 @@
-import { createMiddleware } from "@arcjet/next";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import arcjet, { detectBot, shield } from "arcjet";
 import { RouteMatcher } from "next/dist/server/route-matchers/route-matcher";
 import { NextResponse } from "next/server";
+import arcjet, { createMiddleware, detectBot, shield } from "@arcjet/next";
+
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
