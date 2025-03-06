@@ -33,6 +33,10 @@ export default async function JournalEntryPage({params}){
                 Created {format(new Date(entry.createdAt), "PPP")}
               </p>
             </div>
+            <div>
+              <EditButton />
+              <DeleteDialog />
+            </div>
           </div>
         </div>
       </div>
