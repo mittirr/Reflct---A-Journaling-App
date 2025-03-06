@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { BarLoader } from "react-spinners";
 // import Loading from "./loading";
 
 export default function CollectionLayout({ children }) {
@@ -8,12 +9,12 @@ export default function CollectionLayout({ children }) {
       <div className="mb-8">
         <Link
           href="/dashboard"
-          className="text-sm text-orange-600 hover:text-orange-700"
+          className="text-sm text-yellow-600 hover:text-yellow-700"
         >
           ← Back to Dashboard
         </Link>
       </div>
-      <Suspense>{children}</Suspense>
+      <Suspense fallback={<BarLoader color="yellow" width={"100%"}/>}>{children}</Suspense>
     </div>
   );
 }
