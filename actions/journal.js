@@ -292,3 +292,47 @@ export async function getDraft() {
     }
     
 };
+
+export async function saveDraft(data) {
+    try {
+        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
+    if(!userId) throw new Error("Unauthorized");
+
+
+    const user = await db.user.findUnique({                    // if user exists inside database
+        where:{ clerkUserId: userId },
+    })
+
+    if (!user){                                          // if user is not found in database then throw error
+        throw new Error("No User  Found");
+    } 
+
+    const draft = await db.draft.upsert({
+        where:{
+            userId: user.id,
+        },
+
+        create: {
+            title: data.title,
+            content: data.content,
+            mood: data.mood,
+            userId: user.id,
+        },
+
+        update: {
+            title: data.title,
+            content: data.content,
+            mood: data.mood,
+        }
+    });
+
+    revalidatePath("/dashboard")
+
+    return {success: true, data: draft};
+
+
+    } catch (error) {
+        return {success: false, error: error.message};
+    }
+    
+};
