@@ -9,7 +9,7 @@ import { journalSchema } from '@/app/lib/schema';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getMoodById, MOODS } from '@/app/lib/moods';
-import { object } from 'zod';
+import { isDirty, object } from 'zod';
 import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
 import { createJournalEntry, getDraft, getJournalEntry, saveDraft, updateJournalEntry } from '@/actions/journal';
@@ -47,6 +47,7 @@ export default function JournalEntryPage(){
   const {
     loading: savingDraft,
     fn: saveDraftFn,
+    data: savedDraft,
   } = useFetch(saveDraft);
 
   // Fetch Hooks
@@ -72,7 +73,7 @@ export default function JournalEntryPage(){
 
   
 
-  const {register, handleSubmit, control, setValue, watch, reset, formState:{errors}, getValues} = useForm({
+  const {register, handleSubmit, control, setValue, watch, reset, formState:{errors, isDirty}, getValues} = useForm({
     resolver: zodResolver(journalSchema), 
     defaultValues:{
       title: "",
@@ -164,6 +165,25 @@ export default function JournalEntryPage(){
     createCollectionFn(data);
   };
 
+  const formData = watch();
+
+  const handleSaveDraft = async () => {
+    if(!isDirty){
+      toast.error("No changes to save");
+      return;
+    } 
+
+    await saveDraftFn(formData);
+    
+  };
+
+
+  useEffect(() => {
+    if(savedDraft?.success && !savingDraft){
+      toast.success("Draft saved successfully")
+    }
+  }, [savedDraft, savingDraft]);
+  
   const isLoading = actionLoading || collectionsLoading || entryLoading || draftLoading || savingDraft;
 
   return (
@@ -298,9 +318,19 @@ export default function JournalEntryPage(){
         
         <div className="space-x-4 flex">
 
-        
+        {!isEditMode && (
+            <Button
+              onClick={handleSaveDraft}
+              type="button"
+              variant= "destructive"
+              disabled={savingDraft || !isDirty}
+            >
+              {savingDraft && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
+              Save as Draft
+            </Button>
+          )}
 
-          <Button type="submit" variant="journal" disabled={actionLoading}>
+          <Button type="submit" variant="journal" disabled={actionLoading || !isDirty}>
             {isEditMode? "Update" : "Publish"}
           </Button>
 
