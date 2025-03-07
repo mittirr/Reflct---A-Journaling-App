@@ -263,3 +263,32 @@ export async function updateJournalEntry(data) {
     
     
 };
+
+export async function getDraft() {
+    try {
+        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
+    if(!userId) throw new Error("Unauthorized");
+
+
+    const user = await db.user.findUnique({                    // if user exists inside database
+        where:{ clerkUserId: userId },
+    })
+
+    if (!user){                                          // if user is not found in database then throw error
+        throw new Error("No User  Found");
+    } 
+
+    const draft = await db.draft.findFirst({
+        where:{
+            userId: user.id,
+        },
+    });
+
+    return {success: true, data: draft};
+
+
+    } catch (error) {
+        return {success: false, error: error.message};
+    }
+    
+};
