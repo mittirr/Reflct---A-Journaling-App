@@ -12,7 +12,7 @@ import { getMoodById, MOODS } from '@/app/lib/moods';
 import { object } from 'zod';
 import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
-import { createJournalEntry } from '@/actions/journal';
+import { createJournalEntry, getDraft, getJournalEntry, saveDraft, updateJournalEntry } from '@/actions/journal';
 import {useEffect, useState} from "react";
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -26,9 +26,28 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {ssr: false});
 export default function JournalEntryPage(){
 
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+  const [isEditMode, setIsEditMode] = useState(false)
+
+  const {
+    loading: entryLoading,
+    data: existingEntry,
+    fn: fetchEntry,
+  } = useFetch(getJournalEntry);
+
+  const {
+    loading: draftLoading,
+    data: draftData,
+    fn: fetchDraft,
+  } = useFetch(getDraft);
+
+  const {
+    loading: savingDraft,
+    fn: saveDraftFn,
+  } = useFetch(saveDraft);
 
   // Fetch Hooks
 
@@ -42,7 +61,7 @@ export default function JournalEntryPage(){
     loading: actionLoading,
     fn: actionFn, 
     data: actionResult,
-  } = useFetch(createJournalEntry);
+  } = useFetch(isEditMode ? updateJournalEntry : createJournalEntry);
 
 
   const {
@@ -65,18 +84,57 @@ export default function JournalEntryPage(){
 
   useEffect(() => {
     fetchCollections();
-  }, [])
+    if(editId){
+      setIsEditMode(true);
+      fetchEntry();
+    } else {
+      setIsEditMode(false);
+      fetchDraft();
+    }
+  }, [editId])
+
+  useEffect(() => {
+    if(isEditMode && existingEntry){
+      reset({
+        title: existingEntry.title || "",
+        content: existingEntry.conent || "",
+        mood: existingEntry.mood || "",
+        collectionId: existingEntry.collectionId || "",
+      });
+    } else if (draftData?.success && draftData?.data){
+      reset({
+        title: draftData.data.title || "",
+        content: draftData.data.content || "",
+        mood: draftData.data.mood || "",
+        collectionId: "",
+      });
+
+      reset({
+        title: "",
+        content: "",
+        mood: "",
+        collectionId: "",
+      });
+    }
+  }, [draftData,isEditMode, existingEntry])
+  
   
 
   useEffect(() => {
     if(actionResult && !actionLoading){
+
+      if(actionResult && !actionLoading){
+        if(!isEditMode){      //  clear draft on entry create
+          saveDraft({title: "", content: "", mood: ""});
+        }
+      }
       router.push(
         `/collections/${
           actionResult.collectionId ? actionResult.collectionId : "unorganized"
         }`
     );
 
-      toast.success("Entry Created Successfully");
+      toast.success(`Entry ${isEditMode? "updated" : "Created"} Successfully`);
     }
   }, [actionResult, actionLoading]);                  // run this use effect whenever actionResult or actionLoading changes
   
@@ -89,6 +147,7 @@ export default function JournalEntryPage(){
       ...data,
       moodScore: mood.score,
       moodQuery: mood.pixabayQuery,
+      ...(isEditMode && { id: editId }),
     });
   });
 
@@ -105,14 +164,14 @@ export default function JournalEntryPage(){
     createCollectionFn(data);
   };
 
-  const isLoading = actionLoading || collectionsLoading;
+  const isLoading = actionLoading || collectionsLoading || entryLoading || draftLoading || savingDraft;
 
   return (
 
     <div className="py-8">
       <form className="space-y-2 mx-auto" onSubmit={onSubmit}>
         <h1 className="text-5xl md:text-6xl gradient-title">
-          what&apos;s on your mind?
+          {isEditMode? "Edit Entry" : "What's on your mind?"}
         </h1>
 
         {isLoading && <BarLoader color="orange" width={"100%"}/>}
@@ -235,8 +294,27 @@ export default function JournalEntryPage(){
           
         </div>
 
-        <div className="space-y-4 flex">
-          <Button type="submit" variant="journal" disabled={actionLoading}>Publish</Button>
+        
+        
+        <div className="space-x-4 flex">
+
+        
+
+          <Button type="submit" variant="journal" disabled={actionLoading}>
+            {isEditMode? "Update" : "Publish"}
+          </Button>
+
+          {isEditMode && (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(`/journal/${existingEntry.id}`);
+              }}
+              variant= "destructive"
+            >
+              Cancel
+            </Button>
+          )}
         </div>
       </form>
 
