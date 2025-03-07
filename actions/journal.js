@@ -206,3 +206,60 @@ export async function deleteJournalEntry(id) {
     
     
 };
+
+export async function updateJournalEntry(data) {
+    try {
+        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
+    if(!userId) throw new Error("Unauthorized");
+
+
+    const user = await db.user.findUnique({                    // if user exists inside database
+        where:{ clerkUserId: userId },
+    })
+
+    if (!user){                                          // if user is not found in database then throw error
+        throw new Error("No User  Found");
+    } 
+
+    const existingEntry = await db.entry.findFirst({
+        where:{
+            userId: user.id,
+            id: data.id,
+        },
+    });
+
+    if(!existingEntry) throw new Error("Collection not found");
+
+    const mood = MOODS[data.mood.toUpperCase()];         
+        if(!mood) throw new Error("Invalid mood");
+
+        let moodImageUrl = existingEntry.moodImageUrl;
+
+        if(existingEntry.mood !== mood.id){
+            moodImageUrl = await getPixabayImage(data.moodQuery);
+        }
+
+        const updatedEntry = await db.entry.update({                               // creating an entry to database
+            where: { id: data.id },
+
+            data:{
+                title: data.title,
+                content: data.content,
+                mood: mood.id,
+                moodScore: mood.score,
+                moodImageUrl,
+                collectionId: data.collectionId || null,
+            },
+        })
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/journal/${data.id}`);
+
+    return updatedEntry;
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+    
+    
+};
