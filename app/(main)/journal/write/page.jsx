@@ -130,7 +130,7 @@ export default function JournalEntryPage(){
         }
       }
       router.push(
-        `/collections/${
+        `/collection/${
           actionResult.collectionId ? actionResult.collectionId : "unorganized"
         }`
     );

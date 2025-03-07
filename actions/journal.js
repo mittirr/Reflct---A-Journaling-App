@@ -210,25 +210,25 @@ export async function deleteJournalEntry(id) {
 export async function updateJournalEntry(data) {
     try {
         const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-    if(!userId) throw new Error("Unauthorized");
+        if(!userId) throw new Error("Unauthorized");
 
 
     const user = await db.user.findUnique({                    // if user exists inside database
         where:{ clerkUserId: userId },
     })
 
-    if (!user){                                          // if user is not found in database then throw error
-        throw new Error("No User  Found");
-    } 
+    if (!user) throw new Error("User not found");                                         // if user is not found in database then throw error
+        
 
     const existingEntry = await db.entry.findFirst({
         where:{
-            userId: user.id,
             id: data.id,
+            userId: user.id,
+            
         },
     });
 
-    if(!existingEntry) throw new Error("Collection not found");
+    if(!existingEntry) throw new Error("Entry not found");
 
     const mood = MOODS[data.mood.toUpperCase()];         
         if(!mood) throw new Error("Invalid mood");
@@ -267,7 +267,7 @@ export async function updateJournalEntry(data) {
 export async function getDraft() {
     try {
         const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-    if(!userId) throw new Error("Unauthorized");
+        if(!userId) throw new Error("Unauthorized");
 
 
     const user = await db.user.findUnique({                    // if user exists inside database
@@ -278,7 +278,7 @@ export async function getDraft() {
         throw new Error("No User  Found");
     } 
 
-    const draft = await db.draft.findFirst({
+    const draft = await db.draft.findUnique({
         where:{
             userId: user.id,
         },
@@ -296,7 +296,7 @@ export async function getDraft() {
 export async function saveDraft(data) {
     try {
         const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-    if(!userId) throw new Error("Unauthorized");
+        if(!userId) throw new Error("Unauthorized");
 
 
     const user = await db.user.findUnique({                    // if user exists inside database

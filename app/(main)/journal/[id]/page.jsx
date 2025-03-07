@@ -42,6 +42,9 @@ export default async function JournalEntryPage({params}){
               <DeleteDialog entryId={id}/>
             </div>
           </div>
+
+          {/* Tags section */}
+
           <div className="flex flex-wrap gap-2">
             {entry.collection && (
               <Link href={`/collection/${entry.collection.id}`}>
@@ -64,6 +67,8 @@ export default async function JournalEntryPage({params}){
         </div>
 
         <hr />
+          
+        {/* Content section */}
 
         <div className="ql-snow">
           <div 
@@ -77,5 +82,5 @@ export default async function JournalEntryPage({params}){
         </div>
       </div>
     </>
-  )
+  );
 }
