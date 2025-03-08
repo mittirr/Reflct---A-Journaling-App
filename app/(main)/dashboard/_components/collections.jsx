@@ -23,7 +23,7 @@ const Collections = ({collections = [], entriesByCollection}) => {
         }
     }, [createdCollection])
 
-    const handleCreateCollection = async () => {
+    const handleCreateCollection = async (data) => {
         createCollectionFn(data);
     };
 
