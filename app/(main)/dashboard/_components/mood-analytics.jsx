@@ -4,16 +4,13 @@ import { getAnalytics } from '@/actions/analytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFetch from '@/hooks/use-fetch';
 import { useUser } from '@clerk/nextjs';
-import React, { PureComponent } from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from "react";
 import MoodAnalyticsSkeleton from './analytics-loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getMoodById, getMoodTrend } from '@/app/lib/moods';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { format, parseISO } from 'date-fns';
-import { date } from 'zod';
-
+import Link from "next/link"
 
 const timeOptions = [
     { value: "7d", label: "Last 7 Days" },
@@ -110,7 +107,7 @@ const MoodAnalytics = () => {
         </div>
       </CardContent>
     </Card>
-
+  </div>
     {/* chart */}
 
     <Card>
@@ -132,7 +129,7 @@ const MoodAnalytics = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"
-                  // tickFormatter={(date) => format(parseISO(date), "MMM d")}
+                  tickFormatter={(date) => format(parseISO(date), "MMM d")}
                 />
                 <YAxis yAxisId="left" domain={[0,10]} />
                 <YAxis
@@ -163,7 +160,6 @@ const MoodAnalytics = () => {
               </div>
             </CardContent>
           </Card>
-    </div>
   </div>
   </>
 }
