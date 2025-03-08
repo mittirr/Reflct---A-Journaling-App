@@ -32,24 +32,6 @@ export default function JournalEntryPage(){
   const editId = searchParams.get("edit");
   const [isEditMode, setIsEditMode] = useState(false)
 
-  const {
-    loading: entryLoading,
-    data: existingEntry,
-    fn: fetchEntry,
-  } = useFetch(getJournalEntry);
-
-  const {
-    loading: draftLoading,
-    data: draftData,
-    fn: fetchDraft,
-  } = useFetch(getDraft);
-
-  const {
-    loading: savingDraft,
-    fn: saveDraftFn,
-    data: savedDraft,
-  } = useFetch(saveDraft);
-
   // Fetch Hooks
 
   const {
@@ -57,7 +39,21 @@ export default function JournalEntryPage(){
     fn: fetchCollections, 
     data: collections,
   } = useFetch(getCollections);
+
+  const {
+    loading: entryLoading,
+    data: existingEntry,
+    fn: fetchEntry,
+  } = useFetch(getJournalEntry);
   
+  const {
+    loading: draftLoading,
+    data: draftData,
+    fn: fetchDraft,
+  } = useFetch(getDraft);
+
+  const { loading: savingDraft, fn: saveDraftFn, data: savedDraft} = useFetch(saveDraft);
+
   const {
     loading: actionLoading,
     fn: actionFn, 
@@ -83,17 +79,20 @@ export default function JournalEntryPage(){
     },
   });
 
+  // Handle draft or existing entry loading
+
   useEffect(() => {
     fetchCollections();
     if(editId){
       setIsEditMode(true);
-      fetchEntry();
+      fetchEntry(editId);
     } else {
       setIsEditMode(false);
       fetchDraft();
     }
   }, [editId])
 
+  // Handle setting form data from draft
   useEffect(() => {
     if(isEditMode && existingEntry){
       reset({
@@ -109,7 +108,7 @@ export default function JournalEntryPage(){
         mood: draftData.data.mood || "",
         collectionId: "",
       });
-
+    } else {
       reset({
         title: "",
         content: "",
@@ -120,15 +119,23 @@ export default function JournalEntryPage(){
   }, [draftData,isEditMode, existingEntry])
   
   
+  useEffect(() => {
+    if(createdCollection){
+      setIsCollectionDialogOpen(false);
+      fetchCollections();
+      setValue("collectionId", createdCollection.id);
+      toast.success(`Collection ${createdCollection.name} created!`);
+    }
+  }, [createdCollection])
+
+  // handle successful submission
 
   useEffect(() => {
     if(actionResult && !actionLoading){
-
-      if(actionResult && !actionLoading){
+      // clear draft after successful publish
         if(!isEditMode){      //  clear draft on entry create
           saveDraft({title: "", content: "", mood: ""});
         }
-      }
       router.push(
         `/collection/${
           actionResult.collectionId ? actionResult.collectionId : "unorganized"
@@ -152,19 +159,6 @@ export default function JournalEntryPage(){
     });
   });
 
-  useEffect(() => {
-    if(createdCollection){
-      setIsCollectionDialogOpen(false);
-      fetchCollections();
-      setValue("collectionId", createdCollection.id);
-      toast.success(`Collection ${createdCollection.name} created!`);
-    }
-  }, [createdCollection])
-  
-  const handleCreateCollection = async (data) =>{
-    createCollectionFn(data);
-  };
-
   const formData = watch();
 
   const handleSaveDraft = async () => {
@@ -173,9 +167,19 @@ export default function JournalEntryPage(){
       return;
     } 
 
-    await saveDraftFn(formData);
-    
+    const result = await saveDraftFn(formData);
+    if(result?.success){
+      toast.success("Draft saved successfully");
+    }
   };
+  
+  const handleCreateCollection = async (data) =>{
+    createCollectionFn(data);
+  };
+
+  const isLoading = actionLoading || collectionsLoading || entryLoading || draftLoading || savingDraft;
+
+  
 
 
   useEffect(() => {
@@ -184,7 +188,6 @@ export default function JournalEntryPage(){
     }
   }, [savedDraft, savingDraft]);
   
-  const isLoading = actionLoading || collectionsLoading || entryLoading || draftLoading || savingDraft;
 
   return (
 
@@ -194,7 +197,7 @@ export default function JournalEntryPage(){
           {isEditMode? "Edit Entry" : "What's on your mind?"}
         </h1>
 
-        {isLoading && <BarLoader color="orange" width={"100%"}/>}
+        {isLoading && <BarLoader color="yellow" width={"100%"}/>}
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Title</label>
@@ -247,7 +250,8 @@ export default function JournalEntryPage(){
           <Controller
             name="content"
             control={control}
-            render={({field}) => <ReactQuill 
+            render={({field}) => (
+            <ReactQuill 
             readOnly={isLoading} 
             theme="snow" 
             value={field.value} 
@@ -262,7 +266,8 @@ export default function JournalEntryPage(){
                 ["clean"],
               ],
             }}
-            />}
+            />
+            )}
           />
 
           {errors.content && (<p className="text-red-500 text-sm">{errors.content.message}</p>)}
@@ -272,32 +277,31 @@ export default function JournalEntryPage(){
 
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Add to Collection (optional)
+            Add to Collection
           </label>
           <Controller
             name="collectionId"
             control={control}
-            render={({field}) => {
-              return(
+            render={({field}) => (
                 <Select 
                   onValueChange={(value)=>{
                     if (value === "new"){
-                      setIsCollectionDialogOpen(true)
+                      setIsCollectionDialogOpen(true);
                     } else{
                       field.onChange(value);
                     } 
-                  }} value={field.value}>
+                  }}
+                  value={field.value}
+                  >
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a Collection..." />
                 </SelectTrigger>
                 <SelectContent>
-                {collections?.map((collection) => {
-                    return (
+                {collections?.map((collection) => (
                       <SelectItem key={collection.id} value={collection.id}>
                         {collection.name}
                       </SelectItem>
-                    );
-                })}
+                    ))}
                       <SelectItem value="new">
                           <span className="text-yellow-600">
                             + Create New Collection
@@ -305,9 +309,8 @@ export default function JournalEntryPage(){
                       </SelectItem>
                 </SelectContent>
                 </Select>
-              )
-            }}
-          />
+              )}
+            />
 
           {errors.collectionId && (<p className="text-red-500 text-sm">{errors.collectionId.message}</p>)}
           
@@ -322,7 +325,7 @@ export default function JournalEntryPage(){
             <Button
               onClick={handleSaveDraft}
               type="button"
-              variant= "destructive"
+              variant= "outline"
               disabled={savingDraft || !isDirty}
             >
               {savingDraft && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
