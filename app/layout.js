@@ -1,12 +1,12 @@
 import "./globals.css";
-import {Inter} from "next/font/google"
+import {Inter} from "next/font/google";
 import Header from "@/components/header";
-import {ClerkProvider} from "@clerk/nextjs"
+import {ClerkProvider} from "@clerk/nextjs";
 import { Toaster } from "sonner";
 const inter = Inter({ subset: ["latin"]});
 
 export const metadata = {
-  title: "Create Next App",
+  title: "Reflct",
   description: "A journaling app",
 };
 
