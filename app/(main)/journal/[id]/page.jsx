@@ -60,7 +60,7 @@ export default async function JournalEntryPage({params}){
                 borderColor: `var(--${mood?.color}-200)`,
               }}
             >
-              Feeling: {mood?.label}
+              Feeling {mood?.label}
             </Badge>
 
           </div>
@@ -78,7 +78,7 @@ export default async function JournalEntryPage({params}){
         </div>
 
         <div className="text-sm text-gray-500 pt-4 border-t">
-              Last updated {format(new Date(entry.updatedAt), "ppp 'at' p")}
+              Last updated {format(new Date(entry.updatedAt), "'at' p dd/MM/yyy")}
         </div>
       </div>
     </>

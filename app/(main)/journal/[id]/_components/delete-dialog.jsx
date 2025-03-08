@@ -3,11 +3,10 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button';
 import useFetch from '@/hooks/use-fetch';
+import { useState, useEffect } from "react";
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from "react";
 import { toast } from 'sonner';
-import { useEffect } from "react";
 import { deleteJournalEntry } from '@/actions/journal';
 
 
@@ -34,8 +33,8 @@ useEffect(() => {
   }
 }, [deletedEntry, isDeleting]);
 
-const handleDelete = () => {
-  deleteEntryFn(entryId);
+const handleDelete = async () => {
+  await deleteEntryFn(entryId);
 };
 
   return (

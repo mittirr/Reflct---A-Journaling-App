@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from '@/components/ui/button'
 import { Edit } from 'lucide-react'
@@ -17,7 +17,7 @@ const EditButton = ({ entryId }) => {
       <Edit className="h-4 w-4 mr-2"/>
       Edit
     </Button>
-  )
+  );
 }
 
-export default EditButton
+export default EditButton;
