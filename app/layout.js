@@ -8,6 +8,7 @@ const inter = Inter({
   preload: false,
 });
 
+
 export const metadata = {
   title: "Reflct",
   description: "A journaling app",
