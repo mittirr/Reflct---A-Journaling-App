@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { object } from "zod";
 
 export async function getAnalytics(period = "30d") {
     const { userId } = await auth();
@@ -13,6 +12,9 @@ export async function getAnalytics(period = "30d") {
     });
 
     if(!user) throw new Error("User not found");
+
+
+    // calculate start date based on period
 
     const startDate = new Date()
     switch (period) {
@@ -28,6 +30,8 @@ export async function getAnalytics(period = "30d") {
             break;
     }
 
+    // get entries for the period
+
     const entries = await db.entry.findMany({
         where:{
             userId: user.id,
@@ -40,6 +44,8 @@ export async function getAnalytics(period = "30d") {
         },
     });
 
+    // process entries for analytics
+
     const moodData = entries.reduce((acc, entry) => {
         const date = entry.createdAt.toISOString().split("T")[0];
             if(!acc[date]){
@@ -51,15 +57,17 @@ export async function getAnalytics(period = "30d") {
             }
 
             acc[date].totalScore += entry.moodScore;
-            acc[date].date += 1;
+            acc[date].count += 1;
             acc[date].entries.push(entry);
             return acc;
             
     },{});
 
-    const analyticsData = Object.entries(moodData).map((date, data) => ({
+    // calculate averages and format data for charts
+
+    const analyticsData = Object.entries(moodData).map(([date, data]) => ({
         date,
-        averageScore: Number(data.totalScore / data.count).toFixed(1),
+        averageScore: Number((data.totalScore / data.count).toFixed(1)),
         entryCount: data.count,
     }));
 
@@ -91,6 +99,7 @@ export async function getAnalytics(period = "30d") {
         data: {
             timeline: analyticsData,
             stats: overallStats,
-        }
-    }
+            entries,
+        },
+    };
 }
