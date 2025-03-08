@@ -12,6 +12,9 @@ const inter = Inter({
 export const metadata = {
   title: "Reflct",
   description: "A journaling app",
+  icons: {
+    icon: ['/favicon.png']
+  } 
 };
 
 export default function RootLayout({ children }) {
