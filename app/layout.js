@@ -3,7 +3,10 @@ import {Inter} from "next/font/google";
 import Header from "@/components/header";
 import {ClerkProvider} from "@clerk/nextjs";
 import { Toaster } from "sonner";
-const inter = Inter({ subset: ["latin"]});
+const inter = Inter({ 
+  subset: ['latin'],
+  preload: false,
+});
 
 export const metadata = {
   title: "Reflct",
