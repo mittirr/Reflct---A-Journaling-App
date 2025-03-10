@@ -187,7 +187,7 @@ export default function JournalEntryPage(){
       toast.success("Draft saved successfully")
     }
   }, [savedDraft, savingDraft]);
-  
+
 
   return (
 
@@ -263,6 +263,11 @@ export default function JournalEntryPage(){
                 [{list: "ordered"}, {list: "bullet"}],
                 ["blockquote", "code-block"],
                 ["link"],
+                [{ 'direction': 'rtl' }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'align': [] }],
+                [{ 'font': [] }],
                 ["clean"],
               ],
             }}
