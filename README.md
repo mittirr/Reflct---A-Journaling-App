@@ -111,7 +111,48 @@ Reflct uses Clerk for authentication. Users can:
 - Sign-in / Sign-up with Google
 - Edit credentials
 ## 🧩 Project Structure
-
+📦app
+ ┣ 📂(auth)
+ ┃ ┣ 📂sign-in
+ ┃ ┃ ┗ 📂[[...sign-in]]
+ ┃ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┣ 📂sign-up
+ ┃ ┃ ┗ 📂[[...sign-up]]
+ ┃ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┗ 📜layout.jsx
+ ┣ 📂(main)
+ ┃ ┣ 📂collection
+ ┃ ┃ ┣ 📂[collectionId]
+ ┃ ┃ ┃ ┣ 📜layout.js
+ ┃ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┃ ┗ 📂_components
+ ┃ ┃ ┃ ┣ 📜delete-collection.jsx
+ ┃ ┃ ┃ ┗ 📜journal-filters.jsx
+ ┃ ┣ 📂dashboard
+ ┃ ┃ ┣ 📂_components
+ ┃ ┃ ┃ ┣ 📜analytics-loading.jsx
+ ┃ ┃ ┃ ┣ 📜collection-preview.jsx
+ ┃ ┃ ┃ ┣ 📜collections.jsx
+ ┃ ┃ ┃ ┗ 📜mood-analytics.jsx
+ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┣ 📂journal
+ ┃ ┃ ┣ 📂write
+ ┃ ┃ ┃ ┣ 📜layout.js
+ ┃ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┃ ┗ 📂[id]
+ ┃ ┃ ┃ ┣ 📂_components
+ ┃ ┃ ┃ ┃ ┣ 📜delete-dialog.jsx
+ ┃ ┃ ┃ ┃ ┗ 📜edit-button.jsx
+ ┃ ┃ ┃ ┣ 📜layout.jsx
+ ┃ ┃ ┃ ┗ 📜page.jsx
+ ┃ ┗ 📜layout.js
+ ┣ 📂lib
+ ┃ ┣ 📜moods.js
+ ┃ ┗ 📜schema.js
+ ┣ 📜globals.css
+ ┣ 📜layout.js
+ ┣ 📜not-found.jsx
+ ┗ 📜page.js
 
 ## 🤝 Contributing
 
