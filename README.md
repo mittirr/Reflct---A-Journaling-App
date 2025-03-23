@@ -1,18 +1,7 @@
-<!-- # Reflct:
-###
-<h2 align="left">A digital journal App to organize and reflect your thoughts.</h2>
-
-  
-<h3 align="left">Key Features</h3>
-<ul>
-  <li>your entries are private and protected.</li>
-  <li>Hassle-free login using Google</li>
-</ul> -->
-
-# SmartNotes
+# Reflct
 
 <div align="center">
-  <img src="public/vite.svg" alt="SmartNotes Logo" width="100" />
+  <img src="public/favicon.png" alt="Reflct Logo" width="100" />
   <h3>Capture Your Thoughts with Reflct</h3>
   <p>A digital journal App to organize and reflect your thoughts.</p>
 </div>
