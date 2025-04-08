@@ -3,20 +3,20 @@
 import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
-import { auth } from "@clerk/nextjs/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { revalidatePath } from "next/cache";
+import { createOrGetUser } from "./user";
 
 export async function createCollection(data) {
     try {
-        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-        if(!userId) throw new Error("Unauthorized");
+        const user = await createOrGetUser();
+        if (!user) throw new Error("Unauthorized");
 
         // ArcJet Rate Limiting
-
         const req = await request()
 
         const decision = await aj.protect(req,{
-            userId,
+            userId: user.kindeUserId,
             requested: 1,
         });
 
@@ -32,20 +32,10 @@ export async function createCollection(data) {
                 });
 
                 throw new Error("Too many requests, Please try again later.");
-
             }
 
             throw new Error("Request Blocked");
         }
-
-        const user = await db.user.findUnique({                    // if user exists inside database
-            where:{ clerkUserId: userId },
-        })
-
-
-        if (!user){                                          // if user is not found in database then throw error
-            throw new Error("No User  Found");
-        } 
 
         const collection = await db.collection.create({
             data:{
@@ -63,19 +53,10 @@ export async function createCollection(data) {
     }
 }
 
-
 export async function getCollections() {
-        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-        if(!userId) throw new Error("Unauthorized");
-
-
-        const user = await db.user.findUnique({                    // if user exists inside database
-            where:{ clerkUserId: userId },
-        })
-
-        if (!user){                                          // if user is not found in database then throw error
-            throw new Error("No User  Found");
-        } 
+    try {
+        const user = await createOrGetUser();
+        if (!user) throw new Error("Unauthorized");
 
         const collections = await db.collection.findMany({
             where:{
@@ -85,44 +66,42 @@ export async function getCollections() {
         });
 
         return collections;
-};
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
 export async function getCollection(collectionId) {
-    const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-    if(!userId) throw new Error("Unauthorized");
+    try {
+        const user = await createOrGetUser();
+        if (!user) throw new Error("Unauthorized");
 
+        const collection = await db.collection.findUnique({
+            where:{
+                userId: user.id,
+                id: collectionId,
+            },
+        });
 
-    const user = await db.user.findUnique({                    // if user exists inside database
-        where:{ clerkUserId: userId },
-    })
-
-    if (!user){                                          // if user is not found in database then throw error
-        throw new Error("No User  Found");
-    } 
-
-    const collections = await db.collection.findUnique({
-        where:{
-            userId: user.id,
-            id: collectionId,
-        },
-    });
-
-    return collections;
-};
+        return collection;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
 export async function deleteCollection(collectionId) {
     try {
-        const {userId} = await auth();                       // chechking if user is logged in or not and acting accordingly
-    if(!userId) throw new Error("Unauthorized");
+        const { getUser } = getKindeServerSession();
+        const kindeUser = await getUser();
+        if (!kindeUser?.id) throw new Error("Unauthorized");
 
+        const user = await db.user.findUnique({                    // if user exists inside database
+            where:{ kindeUserId: kindeUser.id },
+        })
 
-    const user = await db.user.findUnique({                    // if user exists inside database
-        where:{ clerkUserId: userId },
-    })
-
-    if (!user){                                          // if user is not found in database then throw error
-        throw new Error("No User  Found");
-    } 
+        if (!user){                                          // if user is not found in database then throw error
+            throw new Error("No User Found");
+        } 
 
     const collection = await db.collection.findFirst({
         where:{
