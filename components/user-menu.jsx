@@ -1,26 +1,22 @@
-"use client";
-import { UserButton } from '@clerk/nextjs'
-import { ChartNoAxesGantt } from 'lucide-react'
 import React from 'react'
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { getKindeUser } from '@/lib/kinde'
 
-const UserMenu = () => {
+const UserMenu = async () => {
+  const user = await getKindeUser();
+  const initials = user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` : '';
+
   return (
-    <UserButton appearance={{
-        elements:{
-            avatarBox: "w-10 h-10",
-        },
-    }}>
-        <UserButton.MenuItems>
-            <UserButton.Link 
-                label="Dashboard"
-                labelIcon={<ChartNoAxesGantt size={15}/>}
-                href="/dashboard"
-            />
-        <UserButton.Action label="manageAccount"/>
-        </UserButton.MenuItems>
-        
-
-    </UserButton>
+    <div className="flex items-center gap-2">
+      <Avatar>
+        <AvatarImage src={user?.picture} />
+        <AvatarFallback>{initials}</AvatarFallback>
+      </Avatar>
+      <LogoutLink>
+        <button className="text-sm font-medium hover:text-gray-600">Logout</button>
+      </LogoutLink>
+    </div>
   )
 }
 
