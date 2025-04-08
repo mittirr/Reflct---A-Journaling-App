@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+// Removing the server-side import
+// import { getKindeUser } from "@/lib/kinde";
 import Image from "next/image";
 import { Button } from "@/components/ui/button"
 import { BarChart, Book, Calendar, ChevronRight, FileText, Lock, Sparkles } from "lucide-react";
@@ -8,6 +13,7 @@ import TestimonialCarousel from "@/components/testimonial-carousel";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import faqs from "@/data/faqs"
 import { getDailyPrompt } from "@/actions/public";
+import { useKindeClient } from "@/lib/kinde-client";
 
 const features = [
   {
@@ -30,8 +36,17 @@ const features = [
   },
 ];
 
-export default async function Home() {
-  const advice = await getDailyPrompt();
+export default function Home() {
+  const [advice, setAdvice] = useState("Loading advice...");
+  const { user, isLoading } = useKindeClient();
+
+  useEffect(() => {
+    async function fetchAdvice() {
+      const dailyAdvice = await getDailyPrompt();
+      setAdvice(dailyAdvice);
+    }
+    fetchAdvice();
+  }, []);
 
   return (
     <div className="container mx-auto py-16 relative px-4">
@@ -84,7 +99,7 @@ export default async function Home() {
           </Link>
 
           <Link href='#features'>
-          <Button variant='outline' className='px-8 py-6 text-black rounded-full border-yellow-600 text-yellow-600 hover:bg-yellow-100 neobrutalism-3'>
+          <Button variant='outline' className='px-8 py-6 rounded-full border-yellow-600 text-yellow-600 hover:bg-yellow-100 neobrutalism-3'>
             Learn More 
           </Button>
           </Link>
