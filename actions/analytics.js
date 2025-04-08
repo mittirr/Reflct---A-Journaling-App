@@ -1,22 +1,15 @@
 "use server";
 
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { createOrGetUser } from "./user";
 
 export async function getAnalytics(period = "30d") {
-    const { userId } = await auth();
-    if(!userId) throw new Error("unauthorized");
-
-    const user = await db.user.findUnique({
-        where:{ clerkUserId: userId},
-    });
-
-    if(!user) throw new Error("User not found");
-
+    const user = await createOrGetUser();
+    if (!user) throw new Error("Unauthorized");
 
     // calculate start date based on period
-
-    const startDate = new Date()
+    const startDate = new Date();
     switch (period) {
         case "7d":
             startDate.setDate(startDate.getDate() - 7);
@@ -31,11 +24,10 @@ export async function getAnalytics(period = "30d") {
     }
 
     // get entries for the period
-
     const entries = await db.entry.findMany({
-        where:{
+        where: {
             userId: user.id,
-            createdAt:{
+            createdAt: {
                 gte: startDate,
             },
         },
@@ -45,56 +37,54 @@ export async function getAnalytics(period = "30d") {
     });
 
     // process entries for analytics
-
     const moodData = entries.reduce((acc, entry) => {
         const date = entry.createdAt.toISOString().split("T")[0];
-            if(!acc[date]){
-                acc[date] = {
-                    totalScore: 0,
-                    count: 0,
-                    entries: [],
-                };
-            }
+        if(!acc[date]){
+            acc[date] = {
+                totalScore: 0,
+                count: 0,
+                entries: [],
+            };
+        }
 
-            acc[date].totalScore += entry.moodScore;
-            acc[date].count += 1;
-            acc[date].entries.push(entry);
-            return acc;
-            
-    },{});
+        acc[date].totalScore += entry.moodScore || 0;
+        acc[date].count += 1;
+        acc[date].entries.push(entry);
+        return acc;
+    }, {});
 
     // calculate averages and format data for charts
-
     const analyticsData = Object.entries(moodData).map(([date, data]) => ({
         date,
-        averageScore: Number((data.totalScore / data.count).toFixed(1)),
+        averageScore: data.count > 0 ? Number((data.totalScore / data.count).toFixed(1)) : 0,
         entryCount: data.count,
     }));
 
-    //calculate overall statistics
-
-    const overallStats = {
+    // calculate overall statistics
+    const overallStats = entries.length > 0 ? {
         totalEntries: entries.length,
         averageScore: Number(
-            (
-            entries.reduce((acc,entry) => acc + entry.moodScore, 0) / entries.length
-            ).toFixed(1)
+            (entries.reduce((acc, entry) => acc + (entry.moodScore || 0), 0) / entries.length).toFixed(1)
         ),
-
         mostFrequentMood: Object.entries(
             entries.reduce((acc, entry) => {
-                acc[entry.mood] = (acc[entry.mood] || 0) + 1;
+                if (entry.mood) {
+                    acc[entry.mood] = (acc[entry.mood] || 0) + 1;
+                }
                 return acc;
             }, {})
         ).sort((a,b) => b[1] - a[1])[0]?.[0],
         dailyAverage: Number(
-            (
-                entries.length / (period === "7d" ? 7 : period === "15d" ? 15 : 30)
-            ).toFixed(1)
+            (entries.length / (period === "7d" ? 7 : period === "15d" ? 15 : 30)).toFixed(1)
         ),
+    } : {
+        totalEntries: 0,
+        averageScore: 0,
+        mostFrequentMood: null,
+        dailyAverage: 0,
     };
 
-    return{
+    return {
         success: true,
         data: {
             timeline: analyticsData,
