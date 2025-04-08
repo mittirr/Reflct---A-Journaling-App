@@ -6,18 +6,20 @@ import Link from 'next/link';
 import EditButton from './_components/edit-button';
 import DeleteDialog from './_components/delete-dialog';
 import { Badge } from '@/components/ui/badge';
+import { getPixabayImage } from '@/actions/public';
 
 export default async function JournalEntryPage({params}){
     const { id } = await params;
     const entry = await getJournalEntry(id);
     const mood = getMoodById(entry.mood);
+    const moodImageUrl = entry.moodImageUrl ? await getPixabayImage(entry.moodImageUrl) : null;
     
   return (
     <>
-      {entry.moodImageUrl && (
+      {moodImageUrl && (
         <div className="relative h-48 md:h-64 w-full">
           <Image
-            src={entry.moodImageUrl}
+            src={moodImageUrl}
             alt="Mood visualization"
             className="object-contain"
             fill

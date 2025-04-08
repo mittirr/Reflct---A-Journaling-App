@@ -3,7 +3,6 @@
 import { getAnalytics } from '@/actions/analytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFetch from '@/hooks/use-fetch';
-import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from "react";
 import MoodAnalyticsSkeleton from './analytics-loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,14 +26,12 @@ const MoodAnalytics = () => {
     data: analytics,
     fn: fetchAnalytics,
   } = useFetch(getAnalytics);
-  
-  const {isLoaded} = useUser();
 
   useEffect(() => {
     fetchAnalytics(period);
   }, [period]);
 
-  if (loading || !analytics?.data || !isLoaded){
+  if (loading || !analytics?.data){
     return <MoodAnalyticsSkeleton/>;
   }
 
@@ -59,7 +56,7 @@ const MoodAnalytics = () => {
 
   return <>
   <div className="flex justify-between items-center">
-    <h2 className="text-5xl font-bold gradient-title">Dashboard</h2>
+    <h2 className="text-2xl font-semibold">Analytics</h2>
     <Select value={period} onValueChange={setPeriod}>
     <SelectTrigger className="w-[140px]">
         <SelectValue/>
