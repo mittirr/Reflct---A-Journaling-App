@@ -1,54 +1,60 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
-import {SignInButton, SignedIn,SignedOut, UserButton } from '@clerk/nextjs'
-import { Button } from './ui/button'
-import { FolderOpen, PenBox } from 'lucide-react'
-import UserMenu from './user-menu'
-import { checkUser } from '@/lib/checkUser'
+"use client";
 
+import { useState } from "react";
+import { useKindeClient } from "@/lib/kinde-client";
+import { LoginLink, LogoutLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
+import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import CollectionDialog from "./collection-dialog";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
-const Header = async () => {
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+  const { user: kindeUser, isLoading } = useKindeClient();
 
-    await checkUser();
+  const handleSuccess = async (data) => {
+    // ...existing code...
+  };
+
   return (
-    <header className='container mx-auto'>
-        <nav className='flex justify-between items-center px-auto'>
-            <Link href={"/"}>
-            <Image src={"/logo.png"} alt="Reflect logo" width={70} height={70} className="w-auto h-auto object-contain"/>
-            </Link>
+    <div className="bg-background sticky top-0 border-b z-50">
+      <div className="container flex items-center justify-between space-x-2 py-2">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="font-bold">
+            Reflct
+          </Link>
+          {kindeUser ? (
+            <Button onClick={() => router.push("/dashboard")} variant="ghost">
+              Dashboard
+            </Button>
+          ) : null}
+        </div>
 
-            <div className='flex items-center gap-4 font-medium'>
-                
-                <SignedIn>
-                    <Link href='/dashboard#collections'>
-                        <Button variant='outline' className='flext items-center gap-2'>
-                            <FolderOpen size={18}/>
-                            <span className='hidden md:inline '>Collections</span>
-                        </Button>
-                    </Link>
-                </SignedIn>
-
-                <Link href='/journal/write'>
-                    <Button variant='journal' className='flext items-center gap-2'>
-                        <PenBox size={18} />
-                        <span className='hidden md:inline '>Write new</span>
-                    </Button>
-                </Link>
-
-                <SignedOut>
-                    <SignInButton forceRedirectUrl='/dashboard' >
-                        <Button variant="outline">Login</Button>
-                    </SignInButton>
-                </SignedOut>
-
-                <SignedIn>
-                    <UserMenu/>
-                </SignedIn>
+        <div className="flex items-center space-x-2">
+          <ModeToggle />
+          {kindeUser ? (
+            <div className="flex items-center gap-2">
+              <CollectionDialog onSuccess={handleSuccess} open={open} setOpen={setOpen} />
+              <Avatar>
+                <AvatarImage src={kindeUser?.picture} />
+                <AvatarFallback>{kindeUser?.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <LogoutLink className={buttonVariants({ variant: "ghost" })}>
+                Logout
+              </LogoutLink>
             </div>
-        </nav>
-    </header>
-  )
+          ) : (
+            <LoginLink className={buttonVariants({ variant: "ghost" })}>
+              Login
+            </LoginLink>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
-
-export default Header
