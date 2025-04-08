@@ -97,7 +97,7 @@ export default function JournalEntryPage(){
     if(isEditMode && existingEntry){
       reset({
         title: existingEntry.title || "",
-        content: existingEntry.conent || "",
+        content: existingEntry.content || "",
         mood: existingEntry.mood || "",
         collectionId: existingEntry.collectionId || "",
       });
@@ -151,12 +151,27 @@ export default function JournalEntryPage(){
   const onSubmit = handleSubmit(async (data) => {
     const mood = getMoodById(data.mood);
 
-    actionFn({
-      ...data,
-      moodScore: mood.score,
-      moodQuery: mood.pixabayQuery,
-      ...(isEditMode && { id: editId }),
-    });
+    if (isEditMode) {
+      // For update, we need to pass the entryId separately
+      actionFn(editId, {
+        title: data.title,
+        content: data.content,
+        mood: data.mood,
+        moodScore: mood.score,
+        moodImageUrl: mood.pixabayQuery,
+        collectionId: data.collectionId || null,
+      });
+    } else {
+      // For create, we can pass all data in one object
+      actionFn({
+        title: data.title,
+        content: data.content,
+        mood: data.mood,
+        moodScore: mood.score,
+        moodImageUrl: mood.pixabayQuery,
+        collectionId: data.collectionId || null,
+      });
+    }
   });
 
   const formData = watch();
