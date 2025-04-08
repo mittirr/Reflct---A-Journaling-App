@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id                String          @id @default(cuid())
-  clerkUserId       String          @unique
+  kindeUserId       String          @unique
   email             String          @unique
   name              String?         
   imageUrl          String?         
@@ -46,8 +46,8 @@ model Entry{
   mood              String
   moodScore         Int
   moodImageUrl      String?
-  collection        Collection      @relation(fields: [collectionId], references: [id], onDelete: Cascade)  
-  collectionId      String
+  collection        Collection?     @relation(fields: [collectionId], references: [id], onDelete: Cascade)  
+  collectionId      String?
   user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   createdAt         DateTime        @default(now())
@@ -57,7 +57,7 @@ model Entry{
 model Draft{
   id                String          @id @default(cuid())
   title             String?
-  content           String?          @db.Text
+  content           String?         @db.Text
   mood              String?
   user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String          @unique
